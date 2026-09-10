@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Books | LibraTrack</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #FDFBF7;
+            color: #5F4B4F;
+        }
+
+        nav {
+            height: 72px;
+            padding: 0 7%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #FFFDFB;
+            border-bottom: 1px solid #F2D8D8;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: 800;
+            color: #C56B82;
+        }
+
+        .logo span {
+            color: #A78BBA;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #6D5960;
+            margin-left: 25px;
+            font-weight: 600;
+        }
+
+        .admin-btn {
+            background: #E6E6FA;
+            color: #765F91 !important;
+            padding: 11px 20px;
+            border-radius: 12px;
+        }
+
+        .container {
+            max-width: 1150px;
+            margin: auto;
+            padding: 60px 25px;
+        }
+
+        .heading {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .heading h1 {
+            font-size: 40px;
+            color: #5B4650;
+            margin-bottom: 10px;
+        }
+
+        .heading p {
+            color: #89767C;
+        }
+
+        .search-box {
+            max-width: 600px;
+            margin: 0 auto 40px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 15px 18px;
+            border-radius: 14px;
+            border: 1px solid #E8D5D8;
+            outline: none;
+            font-size: 15px;
+            background: white;
+        }
+
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 22px;
+        }
+
+        .book-card {
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            border: 1px solid #F0D8D8;
+            box-shadow: 0 8px 25px rgba(130, 85, 95, 0.06);
+        }
+
+        .book-icon {
+            font-size: 32px;
+            margin-bottom: 18px;
+        }
+
+        .book-card h3 {
+            color: #5B4650;
+            margin-bottom: 8px;
+        }
+
+        .book-card p {
+            color: #89767C;
+            margin: 6px 0;
+        }
+
+        .status {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 7px 13px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .available {
+            background: #E3F6EC;
+            color: #3D8B65;
+        }
+
+        .issued {
+            background: #FADADD;
+            color: #A65D72;
+        }
+
+        .empty {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 50px;
+            color: #89767C;
+        }
+
+        @media (max-width: 850px) {
+            .books-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 550px) {
+            .books-grid {
+                grid-template-columns: 1fr;
+            }
+
+            nav {
+                padding: 0 5%;
+            }
+
+            nav a:not(.admin-btn) {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav>
+    <div class="logo">Libra<span>♥</span>Track</div>
+
+    <div>
+        <a href="/">Home</a>
+        <a href="/login" class="admin-btn">Admin Login</a>
+    </div>
+</nav>
+
+
+<div class="container">
+
+    <div class="heading">
+        <h1>Explore Our Books 📚</h1>
+        <p>Browse books currently available in the library.</p>
+    </div>
+
+    <div class="search-box">
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="Search by title, author or category..."
+            onkeyup="searchBooks()"
+        >
+    </div>
+
+
+    <div class="books-grid">
+
+        {% if books %}
+
+            {% for book in books %}
+
+            <div class="book-card">
+
+                <div class="book-icon">📖</div>
+
+                <h3>{{ book.title }}</h3>
+
+                <p><strong>Author:</strong> {{ book.author }}</p>
+
+                <p><strong>Category:</strong> {{ book.category }}</p>
+
+                {% if book.status == "Available" %}
+
+                    <span class="status available">
+                        Available
+                    </span>
+
+                {% else %}
+
+                    <span class="status issued">
+                        Issued
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <div class="empty">
+                <h3>No books available yet 📚</h3>
+                <p>Books added by the admin will appear here.</p>
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+<script>
+
+function searchBooks() {
+
+    let input = document
+        .getElementById("searchInput")
+        .value
+        .toLowerCase();
+
+    let books = document
+        .querySelectorAll(".book-card");
+
+    books.forEach(book => {
+
+        let text = book
+            .innerText
+            .toLowerCase();
+
+        if (text.includes(input)) {
+            book.style.display = "block";
+        } else {
+            book.style.display = "none";
+        }
+
+    });
+
+}
+
+</script>
+
+</body>
+</html>

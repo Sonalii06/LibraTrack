@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LibraTrack | Smart Library Management</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #FDFBF7;
+            color: #5F4B4F;
+        }
+
+        /* NAVBAR */
+        nav {
+            height: 72px;
+            padding: 0 7%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(253, 251, 247, 0.95);
+            border-bottom: 1px solid #F2D8D8;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: 800;
+            color: #C56B82;
+        }
+
+        .logo span {
+            color: #A78BBA;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #6D5960;
+            margin-left: 28px;
+            font-weight: 600;
+        }
+
+        .admin-btn {
+            background: #E6E6FA;
+            color: #765F91 !important;
+            padding: 11px 20px;
+            border-radius: 12px;
+        }
+
+        /* HERO */
+        .hero {
+            min-height: 520px;
+            padding: 75px 8%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 50px;
+            background:
+                radial-gradient(circle at 90% 20%, #E6E6FA 0, transparent 28%),
+                linear-gradient(135deg, #FFF3F5, #FDFBF7);
+        }
+
+        .hero-text {
+            max-width: 600px;
+        }
+
+        .tag {
+            display: inline-block;
+            background: #FADADD;
+            color: #A65D72;
+            padding: 8px 15px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: clamp(42px, 6vw, 68px);
+            line-height: 1.05;
+            color: #5B4650;
+            margin-bottom: 22px;
+        }
+
+        h1 span {
+            color: #C56B82;
+        }
+
+        .hero-text p {
+            font-size: 18px;
+            line-height: 1.7;
+            color: #806D73;
+            margin-bottom: 30px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .primary-btn,
+        .secondary-btn {
+            text-decoration: none;
+            padding: 14px 23px;
+            border-radius: 14px;
+            font-weight: 700;
+            transition: 0.2s;
+        }
+
+        .primary-btn {
+            background: #C56B82;
+            color: white;
+            box-shadow: 0 8px 20px rgba(197, 107, 130, 0.2);
+        }
+
+        .secondary-btn {
+            background: #E6E6FA;
+            color: #765F91;
+        }
+
+        .primary-btn:hover,
+        .secondary-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* HERO CARD */
+        .hero-card {
+            width: 340px;
+            padding: 30px;
+            background: white;
+            border-radius: 24px;
+            border: 1px solid #F0D8D8;
+            box-shadow: 0 18px 45px rgba(130, 85, 95, 0.10);
+        }
+
+        .book-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #FADADD;
+            font-size: 32px;
+            margin-bottom: 22px;
+        }
+
+        .hero-card h3 {
+            color: #624D55;
+            margin-bottom: 10px;
+        }
+
+        .hero-card p {
+            color: #89767C;
+            line-height: 1.6;
+        }
+
+        .gold-line {
+            width: 60px;
+            height: 4px;
+            border-radius: 10px;
+            background: #D6B36A;
+            margin-top: 22px;
+        }
+
+        /* FEATURES */
+        .section {
+            padding: 70px 8%;
+        }
+
+        .section-heading {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .section-heading h2 {
+            font-size: 34px;
+            color: #5B4650;
+            margin-bottom: 10px;
+        }
+
+        .section-heading p {
+            color: #89767C;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 22px;
+        }
+
+        .feature-card {
+            padding: 28px;
+            background: white;
+            border: 1px solid #F0D8D8;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(130, 85, 95, 0.06);
+        }
+
+        .feature-icon {
+            font-size: 27px;
+            margin-bottom: 16px;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 9px;
+            color: #624D55;
+        }
+
+        .feature-card p {
+            color: #89767C;
+            line-height: 1.6;
+        }
+
+        /* FOOTER */
+        footer {
+            text-align: center;
+            padding: 28px;
+            background: #FADADD;
+            color: #765F91;
+            font-size: 14px;
+        }
+
+        @media (max-width: 800px) {
+            .hero {
+                flex-direction: column;
+                text-align: center;
+                padding-top: 55px;
+            }
+
+            .buttons {
+                justify-content: center;
+            }
+
+            .hero-card {
+                width: 100%;
+                max-width: 380px;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            nav {
+                padding: 0 5%;
+            }
+
+            nav .links a:not(.admin-btn) {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav>
+    <div class="logo">Libra<span>♥</span>Track</div>
+
+    <div class="links">
+        <a href="/books">Browse Books</a>
+        <a href="/login" class="admin-btn">Admin Login</a>
+    </div>
+</nav>
+
+<section class="hero">
+
+    <div class="hero-text">
+        <div class="tag">✨ Smart Library Management</div>
+
+        <h1>
+            Your library,<br>
+            <span>beautifully organized.</span>
+        </h1>
+
+        <p>
+            LibraTrack makes issuing, returning and tracking books
+            simple with QR-powered management and a clean,
+            easy-to-use dashboard.
+        </p>
+
+        <div class="buttons">
+            <a href="/books" class="primary-btn">Browse Books →</a>
+            <a href="/login" class="secondary-btn">Admin Portal</a>
+        </div>
+    </div>
+
+    <div class="hero-card">
+        <div class="book-icon">📚</div>
+
+        <h3>Everything in one place</h3>
+
+        <p>
+            Track books, members, borrowing records and due dates
+            through one simple library management system.
+        </p>
+
+        <div class="gold-line"></div>
+    </div>
+
+</section>
+
+<section class="section">
+
+    <div class="section-heading">
+        <h2>Built for a smarter library</h2>
+        <p>Simple tools for everyday library management.</p>
+    </div>
+
+    <div class="features">
+
+        <div class="feature-card">
+            <div class="feature-icon">📷</div>
+            <h3>QR Book Scanning</h3>
+            <p>
+                Quickly identify books using QR codes when issuing
+                or returning them.
+            </p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">📅</div>
+            <h3>Due Date Tracking</h3>
+            <p>
+                Set due dates during issue and automatically track
+                overdue and upcoming returns.
+            </p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">📊</div>
+            <h3>Admin Dashboard</h3>
+            <p>
+                View library statistics, manage transactions and
+                download reports from one dashboard.
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+<footer>
+    © 2026 LibraTrack · Smart Library Management System
+</footer>
+
+</body>
+</html>
