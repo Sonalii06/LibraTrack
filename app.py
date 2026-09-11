@@ -3,12 +3,31 @@ from datetime import date
 import sqlite3
 import csv
 import io
+import os
+import shutil
 
 app = Flask(__name__)
 
 app.secret_key = "libratrack-secret-key"
 
-DATABASE = "library.db"
+
+# =========================================================
+# DATABASE CONFIGURATION
+# =========================================================
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Vercel's deployed filesystem is read-only.
+# /tmp is writable during serverless execution.
+if os.environ.get("VERCEL"):
+    DATABASE = "/tmp/library.db"
+    SOURCE_DATABASE = os.path.join(BASE_DIR, "library.db")
+
+    if not os.path.exists(DATABASE):
+        if os.path.exists(SOURCE_DATABASE):
+            shutil.copy2(SOURCE_DATABASE, DATABASE)
+else:
+    DATABASE = os.path.join(BASE_DIR, "library.db")
 
 
 def get_db():
@@ -16,6 +35,10 @@ def get_db():
     conn.row_factory = sqlite3.Row
     return conn
 
+
+# =========================================================
+# INITIALIZE DATABASE
+# =========================================================
 
 def init_db():
     conn = get_db()
@@ -57,10 +80,18 @@ def init_db():
     conn.close()
 
 
+# =========================================================
+# HOME
+# =========================================================
+
 @app.route("/")
 def home():
     return render_template("index.html")
 
+
+# =========================================================
+# BOOKS
+# =========================================================
 
 @app.route("/books")
 def books():
@@ -87,14 +118,22 @@ def books():
     return render_template("books.html", books=books)
 
 
+# =========================================================
+# LOGIN
+# =========================================================
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
+
     if request.method == "POST":
+
         username = request.form["username"]
         password = request.form["password"]
 
         if username == "admin" and password == "LibraTrack@2026":
+
             session["admin_logged_in"] = True
+
             return redirect("/admin")
 
         return render_template(
@@ -105,14 +144,25 @@ def login():
     return render_template("login.html")
 
 
+# =========================================================
+# LOGOUT
+# =========================================================
+
 @app.route("/logout")
 def logout():
+
     session.pop("admin_logged_in", None)
+
     return redirect("/login")
 
 
+# =========================================================
+# ADMIN DASHBOARD
+# =========================================================
+
 @app.route("/admin")
 def admin():
+
     if not session.get("admin_logged_in"):
         return redirect("/login")
 
@@ -214,8 +264,13 @@ def admin():
     )
 
 
+# =========================================================
+# ADD BOOK
+# =========================================================
+
 @app.route("/add_book", methods=["POST"])
 def add_book():
+
     if not session.get("admin_logged_in"):
         return redirect("/login")
 
@@ -227,6 +282,7 @@ def add_book():
     conn = get_db()
 
     try:
+
         conn.execute("""
             INSERT INTO books
             (title, author, isbn, category)
@@ -237,7 +293,9 @@ def add_book():
             isbn,
             category
         ))
+
         conn.commit()
+
     except sqlite3.IntegrityError:
         pass
 
@@ -245,8 +303,14 @@ def add_book():
 
     return redirect("/admin")
 
+
+# =========================================================
+# EDIT BOOK
+# =========================================================
+
 @app.route("/edit_book/<int:book_id>", methods=["POST"])
 def edit_book(book_id):
+
     if not session.get("admin_logged_in"):
         return redirect("/login")
 
@@ -258,9 +322,13 @@ def edit_book(book_id):
     conn = get_db()
 
     try:
+
         conn.execute("""
             UPDATE books
-            SET title = ?, author = ?, isbn = ?, category = ?
+            SET title = ?,
+                author = ?,
+                isbn = ?,
+                category = ?
             WHERE id = ?
         """, (
             title,
@@ -269,15 +337,24 @@ def edit_book(book_id):
             category,
             book_id
         ))
+
         conn.commit()
+
     except sqlite3.IntegrityError:
         pass
 
     conn.close()
+
     return redirect("/admin")
+
+
+# =========================================================
+# ADD MEMBER
+# =========================================================
 
 @app.route("/add_member", methods=["POST"])
 def add_member():
+
     if not session.get("admin_logged_in"):
         return redirect("/login")
 
@@ -288,6 +365,7 @@ def add_member():
     conn = get_db()
 
     try:
+
         conn.execute("""
             INSERT INTO members
             (name, email, phone)
@@ -297,7 +375,9 @@ def add_member():
             email,
             phone
         ))
+
         conn.commit()
+
     except sqlite3.IntegrityError:
         pass
 
@@ -306,8 +386,13 @@ def add_member():
     return redirect("/admin")
 
 
+# =========================================================
+# EDIT MEMBER
+# =========================================================
+
 @app.route("/edit_member/<int:member_id>", methods=["POST"])
 def edit_member(member_id):
+
     if not session.get("admin_logged_in"):
         return redirect("/login")
 
@@ -318,9 +403,12 @@ def edit_member(member_id):
     conn = get_db()
 
     try:
+
         conn.execute("""
             UPDATE members
-            SET name = ?, email = ?, phone = ?
+            SET name = ?,
+                email = ?,
+                phone = ?
             WHERE id = ?
         """, (
             name,
@@ -328,7 +416,9 @@ def edit_member(member_id):
             phone,
             member_id
         ))
+
         conn.commit()
+
     except sqlite3.IntegrityError:
         pass
 
@@ -337,8 +427,13 @@ def edit_member(member_id):
     return redirect("/admin")
 
 
+# =========================================================
+# DELETE MEMBER
+# =========================================================
+
 @app.route("/delete_member/<int:member_id>", methods=["POST"])
 def delete_member(member_id):
+
     if not session.get("admin_logged_in"):
         return redirect("/login")
 
@@ -352,7 +447,9 @@ def delete_member(member_id):
     """, (member_id,)).fetchone()
 
     if transaction:
+
         conn.close()
+
         return redirect("/admin?delete_blocked=1")
 
     conn.execute("""
@@ -361,13 +458,19 @@ def delete_member(member_id):
     """, (member_id,))
 
     conn.commit()
+
     conn.close()
 
     return redirect("/admin")
 
 
+# =========================================================
+# ISSUE BOOK
+# =========================================================
+
 @app.route("/issue_book", methods=["POST"])
 def issue_book():
+
     if not session.get("admin_logged_in"):
         return redirect("/login")
 
@@ -384,7 +487,9 @@ def issue_book():
     """, (isbn,)).fetchone()
 
     if not book:
+
         conn.close()
+
         return redirect("/admin")
 
     existing = conn.execute("""
@@ -395,6 +500,7 @@ def issue_book():
     """, (book["id"],)).fetchone()
 
     if not existing:
+
         conn.execute("""
             INSERT INTO transactions
             (
@@ -419,8 +525,13 @@ def issue_book():
     return redirect("/admin")
 
 
+# =========================================================
+# RETURN BOOK - MANUAL
+# =========================================================
+
 @app.route("/return_book", methods=["POST"])
 def return_book_manual():
+
     if not session.get("admin_logged_in"):
         return redirect("/login")
 
@@ -440,13 +551,19 @@ def return_book_manual():
     ))
 
     conn.commit()
+
     conn.close()
 
     return redirect("/admin")
 
 
+# =========================================================
+# RETURN BOOK - TRANSACTION ID
+# =========================================================
+
 @app.route("/return_book/<int:transaction_id>", methods=["POST"])
 def return_book(transaction_id):
+
     if not session.get("admin_logged_in"):
         return redirect("/login")
 
@@ -464,13 +581,19 @@ def return_book(transaction_id):
     ))
 
     conn.commit()
+
     conn.close()
 
     return redirect("/admin")
 
 
+# =========================================================
+# RETURN BOOK - QR / ISBN
+# =========================================================
+
 @app.route("/return_book_qr", methods=["POST"])
 def return_book_qr():
+
     if not session.get("admin_logged_in"):
         return redirect("/login")
 
@@ -485,7 +608,9 @@ def return_book_qr():
     """, (isbn,)).fetchone()
 
     if not book:
+
         conn.close()
+
         return redirect("/admin")
 
     transaction = conn.execute("""
@@ -498,6 +623,7 @@ def return_book_qr():
     """, (book["id"],)).fetchone()
 
     if transaction:
+
         conn.execute("""
             UPDATE transactions
             SET return_date = ?,
@@ -515,8 +641,13 @@ def return_book_qr():
     return redirect("/admin")
 
 
+# =========================================================
+# DOWNLOAD CSV REPORT
+# =========================================================
+
 @app.route("/download_report")
 def download_report():
+
     if not session.get("admin_logged_in"):
         return redirect("/login")
 
@@ -541,6 +672,7 @@ def download_report():
     conn.close()
 
     output = io.StringIO()
+
     writer = csv.writer(output)
 
     writer.writerow([
@@ -553,6 +685,7 @@ def download_report():
     ])
 
     for transaction in transactions:
+
         writer.writerow([
             transaction["book"],
             transaction["member"],
@@ -572,8 +705,16 @@ def download_report():
     )
 
 
+# =========================================================
+# START DATABASE
+# =========================================================
+
 init_db()
 
+
+# =========================================================
+# RUN LOCALLY
+# =========================================================
 
 if __name__ == "__main__":
     app.run(debug=True)
