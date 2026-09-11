@@ -483,14 +483,15 @@ The following functionality can be tested after logging in as admin:
 <img width="959" height="473" alt="image" src="https://github.com/user-attachments/assets/189c1e71-2656-4149-b09b-5c25190e9088" />
 <img width="305" height="415" alt="image" src="https://github.com/user-attachments/assets/4be2e700-7447-4b24-8ef5-00c392094c0f" />
 ### 📊 Admin Dashboard
-<img width="947" height="473" alt="image" src="https://github.com/user-attachments/assets/c287441b-0f3b-490c-881b-9fa869dceeb8" />
+<img width="953" height="467" alt="image" src="https://github.com/user-attachments/assets/cfc5a957-e2a8-4184-ad58-8508851af783" />
+<img width="330" height="428" alt="image" src="https://github.com/user-attachments/assets/619fed14-f04a-4c19-bf6e-2bc83de7b983" />
 
 ### 📚 Books
 <img width="775" height="334" alt="image" src="https://github.com/user-attachments/assets/9587a4b1-be6e-4d96-bc47-553d164a64e6" />
-
 ### 👥 Members
 <img width="735" height="272" alt="image" src="https://github.com/user-attachments/assets/f9a04b97-6ef6-403e-a689-e1fd5818e7dc" />
-
+###🔳 Books & QR Codes
+<img width="740" height="462" alt="image" src="https://github.com/user-attachments/assets/af310c50-4cfb-4d7b-a015-7d8788179aee" />
 ### 📱 QR Book Issue and Return
 <img width="709" height="423" alt="image" src="https://github.com/user-attachments/assets/ec8aec34-0594-4b30-a9be-2fe8c80dd5d1" />
 <img width="721" height="301" alt="image" src="https://github.com/user-attachments/assets/56b5560c-efbe-43f3-8bec-54b9b72466c7" />
@@ -498,7 +499,7 @@ The following functionality can be tested after logging in as admin:
 <img width="734" height="324" alt="image" src="https://github.com/user-attachments/assets/acdda008-bb0d-4c44-bdcb-110318522b0f" />
 
 
-### 📑 Transactions
+### 📑 Transaction Tracking
 <img width="722" height="227" alt="image" src="https://github.com/user-attachments/assets/300858f3-9f81-4a51-ac8f-377cf3aabd8b" />
 
 ## 🚀 Deployment
