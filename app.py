@@ -245,6 +245,36 @@ def add_book():
 
     return redirect("/admin")
 
+@app.route("/edit_book/<int:book_id>", methods=["POST"])
+def edit_book(book_id):
+    if not session.get("admin_logged_in"):
+        return redirect("/login")
+
+    title = request.form["title"]
+    author = request.form["author"]
+    isbn = request.form["isbn"]
+    category = request.form["category"]
+
+    conn = get_db()
+
+    try:
+        conn.execute("""
+            UPDATE books
+            SET title = ?, author = ?, isbn = ?, category = ?
+            WHERE id = ?
+        """, (
+            title,
+            author,
+            isbn,
+            category,
+            book_id
+        ))
+        conn.commit()
+    except sqlite3.IntegrityError:
+        pass
+
+    conn.close()
+    return redirect("/admin")
 
 @app.route("/add_member", methods=["POST"])
 def add_member():

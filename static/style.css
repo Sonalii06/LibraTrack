@@ -542,3 +542,42 @@ td {
         white-space: nowrap;
     }
 }
+<style>
+    /* BOOK EDITING */
+    .book-edit-input {
+        display: none;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 8px 10px;
+        border: 1px solid #f472b6;
+        border-radius: 8px;
+        font-size: 14px;
+        background: #fff;
+    }
+
+    tr.editing .book-display {
+        display: none;
+    }
+
+    tr.editing .book-edit-input {
+        display: block;
+    }
+
+    .book-actions {
+        white-space: nowrap;
+    }
+
+    .book-actions .save-btn,
+    .book-actions .cancel-inline-btn {
+        display: none;
+    }
+
+    tr.editing .book-actions .edit-btn {
+        display: none;
+    }
+
+    tr.editing .book-actions .save-btn,
+    tr.editing .book-actions .cancel-inline-btn {
+        display: inline-block;
+    }
+</style>

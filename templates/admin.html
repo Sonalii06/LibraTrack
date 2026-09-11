@@ -1,12 +1,17 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Admin Dashboard | Libra♥Track</title>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
 </head>
 
 <body>
@@ -20,7 +25,8 @@
     <a href="/admin" class="active">📊 Dashboard</a>
     <a href="#books">📚 Books</a>
     <a href="#members">👥 Members</a>
-
+    <a href="#books-qr">🔳 Books & QR Codes</a>
+    <a href="#transactions">📋 Transaction Tracking</a>
     <a href="/logout" class="logout">↪ Logout</a>
 
 </aside>
@@ -318,11 +324,11 @@
     </div>
 
 
-    <!-- BOOK QR CODES -->
+    <!-- BOOKS + QR CODES -->
 
-    <div class="section">
+    <div class="section" id="books-qr">
 
-        <h2>🔳 Book QR Codes</h2>
+        <h2>🔳 Books & QR Codes</h2>
 
         {% if books %}
 
@@ -334,8 +340,11 @@
 
                     <tr>
                         <th>Book</th>
+                        <th>Author</th>
                         <th>ISBN / QR Value</th>
+                        <th>Category</th>
                         <th>QR Code</th>
+                        <th>Actions</th>
                     </tr>
 
                 </thead>
@@ -345,15 +354,89 @@
 
                     {% for book in books %}
 
-                    <tr>
+                    <tr id="book-row-{{ book.id }}">
+
+                        <!-- TITLE -->
 
                         <td>
-                            <strong>{{ book.title }}</strong>
+
+                            <strong class="book-display">
+                                {{ book.title }}
+                            </strong>
+
+                            <input
+                                class="book-edit-input"
+                                type="text"
+                                name="title"
+                                value="{{ book.title }}"
+                                form="edit-book-{{ book.id }}"
+                                required
+                            >
+
                         </td>
 
-                        <td class="isbn">
-                            {{ book.isbn }}
+
+                        <!-- AUTHOR -->
+
+                        <td>
+
+                            <span class="book-display">
+                                {{ book.author }}
+                            </span>
+
+                            <input
+                                class="book-edit-input"
+                                type="text"
+                                name="author"
+                                value="{{ book.author }}"
+                                form="edit-book-{{ book.id }}"
+                                required
+                            >
+
                         </td>
+
+
+                        <!-- ISBN -->
+
+                        <td class="isbn">
+
+                            <span class="book-display">
+                                {{ book.isbn }}
+                            </span>
+
+                            <input
+                                class="book-edit-input"
+                                type="text"
+                                name="isbn"
+                                value="{{ book.isbn }}"
+                                form="edit-book-{{ book.id }}"
+                                required
+                            >
+
+                        </td>
+
+
+                        <!-- CATEGORY -->
+
+                        <td>
+
+                            <span class="book-display">
+                                {{ book.category }}
+                            </span>
+
+                            <input
+                                class="book-edit-input"
+                                type="text"
+                                name="category"
+                                value="{{ book.category }}"
+                                form="edit-book-{{ book.id }}"
+                                required
+                            >
+
+                        </td>
+
+
+                        <!-- QR CODE -->
 
                         <td>
 
@@ -373,6 +456,47 @@
                                 id="qr-{{ book.id }}"
                                 class="qr-box"
                             ></div>
+
+                        </td>
+
+
+                        <!-- ACTIONS -->
+
+                        <td class="book-actions">
+
+                            <button
+                                type="button"
+                                class="edit-btn"
+                                onclick="startEditBook('{{ book.id }}')"
+                            >
+                                ✏️ Edit
+                            </button>
+
+
+                            <form
+                                id="edit-book-{{ book.id }}"
+                                action="/edit_book/{{ book.id }}"
+                                method="POST"
+                                class="inline-form"
+                            >
+
+                                <button
+                                    type="submit"
+                                    class="save-btn"
+                                >
+                                    💾 Save
+                                </button>
+
+                            </form>
+
+
+                            <button
+                                type="button"
+                                class="cancel-inline-btn"
+                                onclick="cancelEditBook('{{ book.id }}')"
+                            >
+                                Cancel
+                            </button>
 
                         </td>
 
@@ -622,7 +746,7 @@
 
     <!-- TRANSACTIONS -->
 
-    <div class="section">
+    <div class="section" id="transactions">
 
         <h2>Transaction Tracking</h2>
 
@@ -660,12 +784,14 @@
             <thead>
 
                 <tr>
+
                     <th>Book</th>
                     <th>Member</th>
                     <th>Issue Date</th>
                     <th>Due Date</th>
                     <th>Return Date</th>
                     <th>Status</th>
+
                 </tr>
 
             </thead>
@@ -772,7 +898,8 @@ let returnScanner = null;
 
 function generateQR(value, containerId, button) {
 
-    const container = document.getElementById(containerId);
+    const container =
+        document.getElementById(containerId);
 
     if (container.style.display === "block") {
 
@@ -800,8 +927,12 @@ function generateQR(value, containerId, button) {
 
 function toggleScanner() {
 
-    const reader = document.getElementById("reader");
-    const button = document.getElementById("scanButton");
+    const reader =
+        document.getElementById("reader");
+
+    const button =
+        document.getElementById("scanButton");
+
 
     if (scanner) {
 
@@ -842,7 +973,9 @@ function toggleScanner() {
 
         (decodedText) => {
 
-            document.getElementById("book_isbn").value = decodedText;
+            document.getElementById("book_isbn").value =
+                decodedText;
+
 
             scanner.stop().then(() => {
 
@@ -876,8 +1009,11 @@ function toggleScanner() {
 
 function toggleReturnScanner() {
 
-    const reader = document.getElementById("return-reader");
-    const button = document.getElementById("returnScanButton");
+    const reader =
+        document.getElementById("return-reader");
+
+    const button =
+        document.getElementById("returnScanButton");
 
 
     if (returnScanner) {
@@ -903,7 +1039,8 @@ function toggleReturnScanner() {
 
     reader.classList.add("active");
 
-    returnScanner = new Html5Qrcode("return-reader");
+    returnScanner =
+        new Html5Qrcode("return-reader");
 
     button.textContent = "✖ Stop Scanner";
 
@@ -919,9 +1056,11 @@ function toggleReturnScanner() {
 
         (decodedText) => {
 
-            document.getElementById("return_isbn").value = decodedText;
+            document.getElementById("return_isbn").value =
+                decodedText;
 
-            document.getElementById("return_isbn_hidden").value = decodedText;
+            document.getElementById("return_isbn_hidden").value =
+                decodedText;
 
 
             returnScanner.stop().then(() => {
@@ -929,7 +1068,8 @@ function toggleReturnScanner() {
                 returnScanner.clear();
                 returnScanner = null;
                 reader.classList.remove("active");
-                button.textContent = "📷 Scan QR to Return";
+                button.textContent =
+                    "📷 Scan QR to Return";
 
                 document.getElementById("return-form").submit();
 
@@ -947,7 +1087,8 @@ function toggleReturnScanner() {
 
         returnScanner = null;
         reader.classList.remove("active");
-        button.textContent = "📷 Scan QR to Return";
+        button.textContent =
+            "📷 Scan QR to Return";
 
     });
 
@@ -961,6 +1102,7 @@ function filterTransactions() {
     const filter =
         document.getElementById("statusFilter").value;
 
+
     const rows =
         document.querySelectorAll(
             "#transactionTable tbody tr[data-status]"
@@ -972,7 +1114,11 @@ function filterTransactions() {
         const status =
             row.getAttribute("data-status");
 
-        if (filter === "All" || status === filter) {
+
+        if (
+            filter === "All" ||
+            status === filter
+        ) {
 
             row.style.display = "";
 
@@ -992,7 +1138,9 @@ function filterTransactions() {
 function startEditMember(id) {
 
     const row =
-        document.getElementById("member-row-" + id);
+        document.getElementById(
+            "member-row-" + id
+        );
 
     row.classList.add("editing");
 
@@ -1002,13 +1150,68 @@ function startEditMember(id) {
 function cancelEditMember(id) {
 
     const row =
-        document.getElementById("member-row-" + id);
+        document.getElementById(
+            "member-row-" + id
+        );
+
 
     const inputs =
-        row.querySelectorAll(".member-edit-input");
+        row.querySelectorAll(
+            ".member-edit-input"
+        );
+
 
     const displays =
-        row.querySelectorAll(".member-display");
+        row.querySelectorAll(
+            ".member-display"
+        );
+
+
+    inputs.forEach((input, index) => {
+
+        input.value =
+            displays[index].textContent.trim();
+
+    });
+
+
+    row.classList.remove("editing");
+
+}
+
+
+/* INLINE BOOK EDIT */
+
+function startEditBook(id) {
+
+    const row =
+        document.getElementById(
+            "book-row-" + id
+        );
+
+    row.classList.add("editing");
+
+}
+
+
+function cancelEditBook(id) {
+
+    const row =
+        document.getElementById(
+            "book-row-" + id
+        );
+
+
+    const inputs =
+        row.querySelectorAll(
+            ".book-edit-input"
+        );
+
+
+    const displays =
+        row.querySelectorAll(
+            ".book-display"
+        );
 
 
     inputs.forEach((input, index) => {
