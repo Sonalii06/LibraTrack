@@ -1,11 +1,11 @@
-from flask import Flask, render_template, request, redirect, session
-from datetime import date, timedelta
+from flask import Flask, render_template, request, redirect, session, Response
+from datetime import date
 import sqlite3
 import csv
 import io
-from flask import Response
 
 app = Flask(__name__)
+
 app.secret_key = "libratrack-secret-key"
 
 DATABASE = "library.db"
@@ -70,7 +70,8 @@ def books():
         SELECT books.*,
         CASE
             WHEN EXISTS (
-                SELECT 1 FROM transactions
+                SELECT 1
+                FROM transactions
                 WHERE transactions.book_id = books.id
                 AND transactions.status = 'Issued'
             )
@@ -88,12 +89,11 @@ def books():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
 
-        if username == "admin" and password == "admin123":
+        if username == "admin" and password == "LibraTrack@2026":
             session["admin_logged_in"] = True
             return redirect("/admin")
 
@@ -113,7 +113,6 @@ def logout():
 
 @app.route("/admin")
 def admin():
-
     if not session.get("admin_logged_in"):
         return redirect("/login")
 
@@ -124,12 +123,14 @@ def admin():
     ).fetchone()[0]
 
     issued_books = conn.execute("""
-        SELECT COUNT(*) FROM transactions
+        SELECT COUNT(*)
+        FROM transactions
         WHERE status = 'Issued'
     """).fetchone()[0]
 
     returned_books = conn.execute("""
-        SELECT COUNT(*) FROM transactions
+        SELECT COUNT(*)
+        FROM transactions
         WHERE status = 'Returned'
     """).fetchone()[0]
 
@@ -149,18 +150,52 @@ def admin():
             transactions.return_date,
             transactions.status
         FROM transactions
-        JOIN books ON books.id = transactions.book_id
-        JOIN members ON members.id = transactions.member_id
+        JOIN books
+            ON books.id = transactions.book_id
+        JOIN members
+            ON members.id = transactions.member_id
         ORDER BY transactions.id DESC
     """).fetchall()
 
-    books = conn.execute(
-        "SELECT * FROM books ORDER BY title"
-    ).fetchall()
+    books = conn.execute("""
+        SELECT *
+        FROM books
+        ORDER BY title
+    """).fetchall()
 
-    members = conn.execute(
-        "SELECT * FROM members ORDER BY name"
-    ).fetchall()
+    members = conn.execute("""
+        SELECT *
+        FROM members
+        ORDER BY name
+    """).fetchall()
+
+    available_book_list = conn.execute("""
+        SELECT *
+        FROM books
+        WHERE NOT EXISTS (
+            SELECT 1
+            FROM transactions
+            WHERE transactions.book_id = books.id
+            AND transactions.status = 'Issued'
+        )
+        ORDER BY title
+    """).fetchall()
+
+    issued_transactions = conn.execute("""
+        SELECT
+            transactions.id,
+            books.title AS book_title,
+            members.name AS member_name,
+            transactions.issue_date,
+            transactions.due_date
+        FROM transactions
+        JOIN books
+            ON books.id = transactions.book_id
+        JOIN members
+            ON members.id = transactions.member_id
+        WHERE transactions.status = 'Issued'
+        ORDER BY books.title
+    """).fetchall()
 
     conn.close()
 
@@ -173,12 +208,14 @@ def admin():
         total_members=total_members,
         transactions=transactions,
         books=books,
-        members=members
+        members=members,
+        available_book_list=available_book_list,
+        issued_transactions=issued_transactions
     )
+
 
 @app.route("/add_book", methods=["POST"])
 def add_book():
-
     if not session.get("admin_logged_in"):
         return redirect("/login")
 
@@ -191,12 +228,16 @@ def add_book():
 
     try:
         conn.execute("""
-            INSERT INTO books (title, author, isbn, category)
+            INSERT INTO books
+            (title, author, isbn, category)
             VALUES (?, ?, ?, ?)
-        """ , (title, author, isbn, category))
-
+        """, (
+            title,
+            author,
+            isbn,
+            category
+        ))
         conn.commit()
-
     except sqlite3.IntegrityError:
         pass
 
@@ -207,7 +248,6 @@ def add_book():
 
 @app.route("/add_member", methods=["POST"])
 def add_member():
-
     if not session.get("admin_logged_in"):
         return redirect("/login")
 
@@ -219,12 +259,15 @@ def add_member():
 
     try:
         conn.execute("""
-            INSERT INTO members (name, email, phone)
+            INSERT INTO members
+            (name, email, phone)
             VALUES (?, ?, ?)
-        """, (name, email, phone))
-
+        """, (
+            name,
+            email,
+            phone
+        ))
         conn.commit()
-
     except sqlite3.IntegrityError:
         pass
 
@@ -232,9 +275,69 @@ def add_member():
 
     return redirect("/admin")
 
+
+@app.route("/edit_member/<int:member_id>", methods=["POST"])
+def edit_member(member_id):
+    if not session.get("admin_logged_in"):
+        return redirect("/login")
+
+    name = request.form["name"]
+    email = request.form["email"]
+    phone = request.form["phone"]
+
+    conn = get_db()
+
+    try:
+        conn.execute("""
+            UPDATE members
+            SET name = ?, email = ?, phone = ?
+            WHERE id = ?
+        """, (
+            name,
+            email,
+            phone,
+            member_id
+        ))
+        conn.commit()
+    except sqlite3.IntegrityError:
+        pass
+
+    conn.close()
+
+    return redirect("/admin")
+
+
+@app.route("/delete_member/<int:member_id>", methods=["POST"])
+def delete_member(member_id):
+    if not session.get("admin_logged_in"):
+        return redirect("/login")
+
+    conn = get_db()
+
+    transaction = conn.execute("""
+        SELECT id
+        FROM transactions
+        WHERE member_id = ?
+        LIMIT 1
+    """, (member_id,)).fetchone()
+
+    if transaction:
+        conn.close()
+        return redirect("/admin?delete_blocked=1")
+
+    conn.execute("""
+        DELETE FROM members
+        WHERE id = ?
+    """, (member_id,))
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/admin")
+
+
 @app.route("/issue_book", methods=["POST"])
 def issue_book():
-
     if not session.get("admin_logged_in"):
         return redirect("/login")
 
@@ -244,25 +347,33 @@ def issue_book():
 
     conn = get_db()
 
-    book = conn.execute(
-        "SELECT id FROM books WHERE isbn = ?",
-        (isbn,)
-    ).fetchone()
+    book = conn.execute("""
+        SELECT id
+        FROM books
+        WHERE isbn = ?
+    """, (isbn,)).fetchone()
 
     if not book:
         conn.close()
         return redirect("/admin")
 
     existing = conn.execute("""
-        SELECT id FROM transactions
-        WHERE book_id = ? AND status = 'Issued'
+        SELECT id
+        FROM transactions
+        WHERE book_id = ?
+        AND status = 'Issued'
     """, (book["id"],)).fetchone()
 
     if not existing:
-
         conn.execute("""
             INSERT INTO transactions
-            (book_id, member_id, issue_date, due_date, status)
+            (
+                book_id,
+                member_id,
+                issue_date,
+                due_date,
+                status
+            )
             VALUES (?, ?, ?, ?, 'Issued')
         """, (
             book["id"],
@@ -277,9 +388,35 @@ def issue_book():
 
     return redirect("/admin")
 
+
+@app.route("/return_book", methods=["POST"])
+def return_book_manual():
+    if not session.get("admin_logged_in"):
+        return redirect("/login")
+
+    transaction_id = request.form["transaction_id"]
+
+    conn = get_db()
+
+    conn.execute("""
+        UPDATE transactions
+        SET return_date = ?,
+            status = 'Returned'
+        WHERE id = ?
+        AND status = 'Issued'
+    """, (
+        date.today().isoformat(),
+        transaction_id
+    ))
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/admin")
+
+
 @app.route("/return_book/<int:transaction_id>", methods=["POST"])
 def return_book(transaction_id):
-
     if not session.get("admin_logged_in"):
         return redirect("/login")
 
@@ -287,18 +424,69 @@ def return_book(transaction_id):
 
     conn.execute("""
         UPDATE transactions
-        SET return_date = ?, status = 'Returned'
-        WHERE id = ? AND status = 'Issued'
-    """, (date.today().isoformat(), transaction_id))
+        SET return_date = ?,
+            status = 'Returned'
+        WHERE id = ?
+        AND status = 'Issued'
+    """, (
+        date.today().isoformat(),
+        transaction_id
+    ))
 
     conn.commit()
     conn.close()
 
     return redirect("/admin")
 
+
+@app.route("/return_book_qr", methods=["POST"])
+def return_book_qr():
+    if not session.get("admin_logged_in"):
+        return redirect("/login")
+
+    isbn = request.form["isbn"]
+
+    conn = get_db()
+
+    book = conn.execute("""
+        SELECT id
+        FROM books
+        WHERE isbn = ?
+    """, (isbn,)).fetchone()
+
+    if not book:
+        conn.close()
+        return redirect("/admin")
+
+    transaction = conn.execute("""
+        SELECT id
+        FROM transactions
+        WHERE book_id = ?
+        AND status = 'Issued'
+        ORDER BY id DESC
+        LIMIT 1
+    """, (book["id"],)).fetchone()
+
+    if transaction:
+        conn.execute("""
+            UPDATE transactions
+            SET return_date = ?,
+                status = 'Returned'
+            WHERE id = ?
+        """, (
+            date.today().isoformat(),
+            transaction["id"]
+        ))
+
+        conn.commit()
+
+    conn.close()
+
+    return redirect("/admin")
+
+
 @app.route("/download_report")
 def download_report():
-
     if not session.get("admin_logged_in"):
         return redirect("/login")
 
@@ -313,15 +501,16 @@ def download_report():
             transactions.return_date,
             transactions.status
         FROM transactions
-        JOIN books ON books.id = transactions.book_id
-        JOIN members ON members.id = transactions.member_id
+        JOIN books
+            ON books.id = transactions.book_id
+        JOIN members
+            ON members.id = transactions.member_id
         ORDER BY transactions.id DESC
     """).fetchall()
 
     conn.close()
 
     output = io.StringIO()
-
     writer = csv.writer(output)
 
     writer.writerow([
@@ -351,6 +540,7 @@ def download_report():
             "attachment; filename=library_report.csv"
         }
     )
+
 
 init_db()
 

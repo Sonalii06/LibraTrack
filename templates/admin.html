@@ -4,280 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Admin Dashboard | Libra♥Track</title>
 
-    <style>
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: "Segoe UI", Arial, sans-serif;
-            background: #FDFBF7;
-            color: #5F4B4F;
-        }
-
-        .sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 230px;
-            height: 100vh;
-            padding: 30px 20px;
-            background: #E6E6FA;
-        }
-
-        .logo {
-            font-size: 25px;
-            font-weight: 800;
-            color: #C56B82;
-            margin-bottom: 45px;
-        }
-
-        .logo span {
-            color: #765F91;
-        }
-
-        .sidebar a {
-            display: block;
-            padding: 13px 15px;
-            margin-bottom: 8px;
-            border-radius: 12px;
-            text-decoration: none;
-            color: #66566F;
-            font-weight: 600;
-        }
-
-        .sidebar a:hover,
-        .sidebar .active {
-            background: #FADADD;
-            color: #A65D72;
-        }
-
-        .logout {
-            position: absolute;
-            bottom: 25px;
-            left: 20px;
-            right: 20px;
-        }
-
-        .main {
-            margin-left: 230px;
-            padding: 40px;
-        }
-
-        .header {
-            margin-bottom: 30px;
-        }
-
-        .header h1 {
-            color: #5B4650;
-            margin-bottom: 6px;
-        }
-
-        .header p {
-            color: #89767C;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 18px;
-            margin-bottom: 35px;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 22px;
-            border-radius: 18px;
-            border: 1px solid #F0D8D8;
-            box-shadow: 0 8px 25px rgba(130, 85, 95, 0.06);
-        }
-
-        .stat-card h3 {
-            font-size: 14px;
-            color: #89767C;
-            margin-bottom: 10px;
-        }
-
-        .stat-card strong {
-            font-size: 30px;
-            color: #C56B82;
-        }
-
-        .management-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 25px;
-        }
-
-        .section {
-            background: white;
-            padding: 25px;
-            border-radius: 20px;
-            border: 1px solid #F0D8D8;
-            box-shadow: 0 8px 25px rgba(130, 85, 95, 0.05);
-            margin-bottom: 25px;
-        }
-
-        .section h2 {
-            color: #5B4650;
-            margin-bottom: 20px;
-        }
-
-        .section input,
-        .section select {
-            width: 100%;
-            padding: 13px;
-            margin-bottom: 12px;
-            border: 1px solid #E8D5D8;
-            border-radius: 12px;
-            outline: none;
-            font-size: 14px;
-            background: white;
-        }
-
-        .section input:focus,
-        .section select:focus {
-            border-color: #C56B82;
-        }
-
-        .section button {
-            border: none;
-            padding: 12px 20px;
-            border-radius: 12px;
-            background: #C56B82;
-            color: white;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        .section button:hover {
-            background: #B85D75;
-        }
-
-        .scan-btn {
-            margin-top: 5px;
-            background: #E6E6FA !important;
-            color: #765F91 !important;
-        }
-
-        .scan-btn:hover {
-            background: #D8D8F0 !important;
-        }
-
-        #reader {
-            margin-bottom: 15px;
-        }
-
-        label {
-            display: block;
-            font-size: 13px;
-            color: #765F91;
-            font-weight: 600;
-            margin-bottom: 6px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th,
-        td {
-            padding: 14px 10px;
-            text-align: left;
-            border-bottom: 1px solid #F3E5E5;
-        }
-
-        th {
-            color: #765F91;
-            font-size: 14px;
-        }
-
-        td {
-            color: #6D5960;
-        }
-
-        .status {
-            padding: 6px 11px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 700;
-            background: #FADADD;
-            color: #A65D72;
-        }
-
-        .return-btn {
-            margin-left: 8px;
-            padding: 7px 12px !important;
-            border-radius: 10px !important;
-            background: #E6E6FA !important;
-            color: #765F91 !important;
-        }
-
-        .return-btn:hover {
-            background: #D8D8F0 !important;
-        }
-
-        .report-btn {
-            display: inline-block;
-            margin-bottom: 20px;
-            padding: 11px 18px;
-            border-radius: 12px;
-            background: #D6B36A;
-            color: white;
-            text-decoration: none;
-            font-weight: 700;
-        }
-
-        #statusFilter {
-            max-width: 220px;
-        }
-
-        @media (max-width: 1000px) {
-            .stats {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 700px) {
-
-            .sidebar {
-                position: static;
-                width: 100%;
-                height: auto;
-            }
-
-            .logout {
-                position: static;
-                margin-top: 20px;
-            }
-
-            .main {
-                margin-left: 0;
-                padding: 20px;
-            }
-
-            .stats {
-                grid-template-columns: 1fr;
-            }
-
-            .management-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .section {
-                overflow-x: auto;
-            }
-        }
-
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
@@ -289,7 +18,9 @@
     </div>
 
     <a href="/admin" class="active">📊 Dashboard</a>
-    <a href="/books">📚 Books</a>
+    <a href="#books">📚 Books</a>
+    <a href="#members">👥 Members</a>
+
     <a href="/logout" class="logout">↪ Logout</a>
 
 </aside>
@@ -298,8 +29,11 @@
 <main class="main">
 
     <div class="header">
+
         <h1>Welcome, Admin 💗</h1>
+
         <p>Manage your library from one place.</p>
+
     </div>
 
 
@@ -339,44 +73,324 @@
 
     <div class="management-grid">
 
-        <div class="section">
+        <div class="section" id="books">
 
             <h2>📚 Add Book</h2>
 
             <form action="/add_book" method="POST">
 
-                <input type="text" name="title" placeholder="Book title" required>
+                <input
+                    type="text"
+                    name="title"
+                    placeholder="Book title"
+                    required
+                >
 
-                <input type="text" name="author" placeholder="Author" required>
+                <input
+                    type="text"
+                    name="author"
+                    placeholder="Author"
+                    required
+                >
 
-                <input type="text" name="isbn" placeholder="ISBN / QR code value" required>
+                <input
+                    type="text"
+                    name="isbn"
+                    placeholder="ISBN / QR code value"
+                    required
+                >
 
-                <input type="text" name="category" placeholder="Category" required>
+                <input
+                    type="text"
+                    name="category"
+                    placeholder="Category"
+                    required
+                >
 
-                <button type="submit">Add Book</button>
+                <button type="submit">
+                    Add Book
+                </button>
 
             </form>
 
         </div>
 
 
-        <div class="section">
+        <div class="section" id="add-member">
 
             <h2>👥 Add Member</h2>
 
             <form action="/add_member" method="POST">
 
-                <input type="text" name="name" placeholder="Member name" required>
+                <input
+                    type="text"
+                    name="name"
+                    placeholder="Member name"
+                    required
+                >
 
-                <input type="email" name="email" placeholder="Email" required>
+                <input
+                    type="email"
+                    name="email"
+                    placeholder="Email"
+                    required
+                >
 
-                <input type="text" name="phone" placeholder="Phone number" required>
+                <input
+                    type="text"
+                    name="phone"
+                    placeholder="Phone number"
+                    required
+                >
 
-                <button type="submit">Add Member</button>
+                <button type="submit">
+                    Add Member
+                </button>
 
             </form>
 
         </div>
+
+    </div>
+
+
+    <!-- MEMBERS -->
+
+    <div class="section" id="members">
+
+        <h2>👥 Available Members</h2>
+
+        {% if request.args.get('delete_blocked') == '1' %}
+
+        <div class="delete-warning">
+            ⚠️ Sorry, this member can't be deleted because they have current logs.
+        </div>
+
+        {% endif %}
+
+
+        {% if members %}
+
+        <div class="member-table">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Actions</th>
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for member in members %}
+
+                    <tr id="member-row-{{ member.id }}">
+
+                        <td>
+
+                            <strong class="member-display">
+                                {{ member.name }}
+                            </strong>
+
+                            <input
+                                class="member-edit-input"
+                                type="text"
+                                name="name"
+                                value="{{ member.name }}"
+                                form="edit-member-{{ member.id }}"
+                            >
+
+                        </td>
+
+
+                        <td>
+
+                            <span class="member-display">
+                                {{ member.email }}
+                            </span>
+
+                            <input
+                                class="member-edit-input"
+                                type="email"
+                                name="email"
+                                value="{{ member.email }}"
+                                form="edit-member-{{ member.id }}"
+                            >
+
+                        </td>
+
+
+                        <td>
+
+                            <span class="member-display">
+                                {{ member.phone }}
+                            </span>
+
+                            <input
+                                class="member-edit-input"
+                                type="text"
+                                name="phone"
+                                value="{{ member.phone }}"
+                                form="edit-member-{{ member.id }}"
+                            >
+
+                        </td>
+
+
+                        <td class="member-actions">
+
+                            <button
+                                type="button"
+                                class="edit-btn"
+                                onclick="startEditMember('{{ member.id }}')"
+                            >
+                                ✏️ Edit
+                            </button>
+
+
+                            <form
+                                id="edit-member-{{ member.id }}"
+                                action="/edit_member/{{ member.id }}"
+                                method="POST"
+                                class="inline-form"
+                            >
+
+                                <button
+                                    type="submit"
+                                    class="save-btn"
+                                >
+                                    💾 Save
+                                </button>
+
+                            </form>
+
+
+                            <button
+                                type="button"
+                                class="cancel-inline-btn"
+                                onclick="cancelEditMember('{{ member.id }}')"
+                            >
+                                Cancel
+                            </button>
+
+
+                            <form
+                                class="delete-member-form"
+                                action="/delete_member/{{ member.id }}"
+                                method="POST"
+                                onsubmit="return confirm('Are you sure you want to delete this member?');"
+                            >
+
+                                <button
+                                    type="submit"
+                                    class="delete-btn"
+                                >
+                                    🗑 Delete
+                                </button>
+
+                            </form>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <p>No members added yet.</p>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- BOOK QR CODES -->
+
+    <div class="section">
+
+        <h2>🔳 Book QR Codes</h2>
+
+        {% if books %}
+
+        <div class="qr-table">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Book</th>
+                        <th>ISBN / QR Value</th>
+                        <th>QR Code</th>
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for book in books %}
+
+                    <tr>
+
+                        <td>
+                            <strong>{{ book.title }}</strong>
+                        </td>
+
+                        <td class="isbn">
+                            {{ book.isbn }}
+                        </td>
+
+                        <td>
+
+                            <button
+                                type="button"
+                                class="qr-btn"
+                                onclick="generateQR(
+                                    '{{ book.isbn }}',
+                                    'qr-{{ book.id }}',
+                                    this
+                                )"
+                            >
+                                Generate QR
+                            </button>
+
+                            <div
+                                id="qr-{{ book.id }}"
+                                class="qr-box"
+                            ></div>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <p>No books added yet.</p>
+
+        {% endif %}
 
     </div>
 
@@ -387,22 +401,32 @@
 
         <h2>📖 Issue Book</h2>
 
-        <div id="reader"></div>
+        <h3 class="method-title">⌨️ Manual Issue</h3>
 
         <form action="/issue_book" method="POST">
 
-            <input
-                type="text"
-                id="book_isbn"
-                name="isbn"
-                placeholder="Scan book QR code"
-                readonly
-                required
-            >
+            <select name="isbn" required>
+
+                <option value="">
+                    Select available book
+                </option>
+
+                {% for book in available_book_list %}
+
+                <option value="{{ book.isbn }}">
+                    {{ book.title }} — {{ book.author }}
+                </option>
+
+                {% endfor %}
+
+            </select>
+
 
             <select name="member_id" required>
 
-                <option value="">Select member</option>
+                <option value="">
+                    Select member
+                </option>
 
                 {% for member in members %}
 
@@ -414,21 +438,184 @@
 
             </select>
 
+
             <label>Due Date</label>
 
-            <input type="date" name="due_date" required>
+            <input
+                type="date"
+                name="due_date"
+                required
+            >
 
-            <button type="submit">Issue Book</button>
+
+            <button type="submit">
+                📖 Issue Book Manually
+            </button>
 
         </form>
 
+
+        <div class="divider">
+            OR
+        </div>
+
+
+        <h3 class="method-title">📷 QR Issue</h3>
+
+        <form action="/issue_book" method="POST">
+
+            <div
+                id="reader"
+                class="scanner-container"
+            ></div>
+
+
+            <input
+                type="text"
+                id="book_isbn"
+                name="isbn"
+                placeholder="Scan book QR code"
+                readonly
+                required
+            >
+
+
+            <select name="member_id" required>
+
+                <option value="">
+                    Select member
+                </option>
+
+                {% for member in members %}
+
+                <option value="{{ member.id }}">
+                    {{ member.name }}
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+
+            <label>Due Date</label>
+
+            <input
+                type="date"
+                name="due_date"
+                required
+            >
+
+
+            <button type="submit">
+                📖 Issue Scanned Book
+            </button>
+
+        </form>
+
+
         <button
             type="button"
-            onclick="startScanner()"
+            onclick="toggleScanner()"
             class="scan-btn"
+            id="scanButton"
         >
             📷 Scan QR Code
         </button>
+
+    </div>
+
+
+    <!-- RETURN BOOK -->
+
+    <div class="section">
+
+        <h2>↩️ Return Book</h2>
+
+        <h3 class="method-title">⌨️ Manual Return</h3>
+
+        {% if issued_transactions %}
+
+        <form action="/return_book" method="POST">
+
+            <select name="transaction_id" required>
+
+                <option value="">
+                    Select issued book
+                </option>
+
+                {% for transaction in issued_transactions %}
+
+                <option value="{{ transaction.id }}">
+                    {{ transaction.book_title }} — {{ transaction.member_name }}
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+
+            <button
+                type="submit"
+                class="return-btn-manual"
+            >
+                ↩️ Return Book Manually
+            </button>
+
+        </form>
+
+        {% else %}
+
+        <p>No books are currently issued.</p>
+
+        {% endif %}
+
+
+        <div class="divider">
+            OR
+        </div>
+
+
+        <h3 class="method-title">📷 QR Return</h3>
+
+
+        <div
+            id="return-reader"
+            class="scanner-container"
+        ></div>
+
+
+        <input
+            type="text"
+            id="return_isbn"
+            placeholder="Scan book QR code to return"
+            readonly
+        >
+
+
+        <button
+            type="button"
+            onclick="toggleReturnScanner()"
+            class="scan-btn"
+            id="returnScanButton"
+        >
+            📷 Scan QR to Return
+        </button>
+
+
+        <form
+            id="return-form"
+            action="/return_book_qr"
+            method="POST"
+            style="display:none;"
+        >
+
+            <input
+                type="hidden"
+                id="return_isbn_hidden"
+                name="isbn"
+            >
+
+        </form>
 
     </div>
 
@@ -439,15 +626,31 @@
 
         <h2>Transaction Tracking</h2>
 
-        <select id="statusFilter" onchange="filterTransactions()">
 
-            <option value="All">All Transactions</option>
-            <option value="Issued">Issued</option>
-            <option value="Returned">Returned</option>
+        <select
+            id="statusFilter"
+            onchange="filterTransactions()"
+        >
+
+            <option value="All">
+                All Transactions
+            </option>
+
+            <option value="Issued">
+                Issued
+            </option>
+
+            <option value="Returned">
+                Returned
+            </option>
 
         </select>
 
-        <a href="/download_report" class="report-btn">
+
+        <a
+            href="/download_report"
+            class="report-btn"
+        >
             ⬇ Download CSV Report
         </a>
 
@@ -474,28 +677,42 @@
 
                 <tr data-status="{{ transaction.status }}">
 
-                    <td>{{ transaction.book_title }}</td>
+                    <td data-label="Book">
+                        {{ transaction.book_title }}
+                    </td>
 
-                    <td>{{ transaction.member_name }}</td>
+                    <td data-label="Member">
+                        {{ transaction.member_name }}
+                    </td>
 
-                    <td>{{ transaction.issue_date }}</td>
+                    <td data-label="Issue Date">
+                        {{ transaction.issue_date }}
+                    </td>
 
-                    <td>{{ transaction.due_date }}</td>
+                    <td data-label="Due Date">
+                        {{ transaction.due_date }}
+                    </td>
 
-                    <td>{{ transaction.return_date or "—" }}</td>
+                    <td data-label="Return Date">
+                        {{ transaction.return_date or "—" }}
+                    </td>
 
-                    <td>
+                    <td
+                        data-label="Status"
+                        class="transaction-status"
+                    >
 
                         <span class="status">
                             {{ transaction.status }}
                         </span>
+
 
                         {% if transaction.status == "Issued" %}
 
                         <form
                             action="/return_book/{{ transaction.id }}"
                             method="POST"
-                            style="display:inline;"
+                            class="inline-form"
                         >
 
                             <button
@@ -513,10 +730,15 @@
 
                 </tr>
 
+
                 {% else %}
 
                 <tr>
-                    <td colspan="6">No transactions yet.</td>
+
+                    <td colspan="6">
+                        No transactions yet.
+                    </td>
+
                 </tr>
 
                 {% endfor %}
@@ -530,24 +752,89 @@
 </main>
 
 
+<!-- QR CODE GENERATOR -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+
 <!-- QR SCANNER -->
 
 <script src="https://unpkg.com/html5-qrcode"></script>
 
+
 <script>
 
 let scanner = null;
+let returnScanner = null;
 
-function startScanner() {
 
-    if (scanner) {
+/* GENERATE QR */
+
+function generateQR(value, containerId, button) {
+
+    const container = document.getElementById(containerId);
+
+    if (container.style.display === "block") {
+
+        container.style.display = "none";
+        container.innerHTML = "";
+        button.textContent = "Generate QR";
+
         return;
     }
 
+    container.innerHTML = "";
+
+    new QRCode(container, {
+        text: value,
+        width: 150,
+        height: 150
+    });
+
+    container.style.display = "block";
+    button.textContent = "Hide QR";
+}
+
+
+/* ISSUE QR SCANNER */
+
+function toggleScanner() {
+
+    const reader = document.getElementById("reader");
+    const button = document.getElementById("scanButton");
+
+    if (scanner) {
+
+        scanner.stop().then(() => {
+
+            scanner.clear();
+            scanner = null;
+            reader.classList.remove("active");
+            button.textContent = "📷 Scan QR Code";
+
+        }).catch(() => {
+
+            scanner = null;
+            reader.classList.remove("active");
+            button.textContent = "📷 Scan QR Code";
+
+        });
+
+        return;
+    }
+
+
+    reader.classList.add("active");
+
     scanner = new Html5Qrcode("reader");
 
+    button.textContent = "✖ Stop Scanner";
+
+
     scanner.start(
+
         { facingMode: "environment" },
+
         {
             fps: 10,
             qrbox: 250
@@ -558,45 +845,181 @@ function startScanner() {
             document.getElementById("book_isbn").value = decodedText;
 
             scanner.stop().then(() => {
+
+                scanner.clear();
                 scanner = null;
+                reader.classList.remove("active");
+                button.textContent = "📷 Scan QR Code";
+
             });
 
         },
 
-        (errorMessage) => {
-            // Ignore scanning errors
-        }
+        () => {}
 
-    ).catch((error) => {
+    ).catch(() => {
 
-        alert("Unable to access camera. Please allow camera permission.");
+        alert(
+            "Unable to access camera. Please allow camera permission."
+        );
 
         scanner = null;
+        reader.classList.remove("active");
+        button.textContent = "📷 Scan QR Code";
 
     });
 
 }
 
 
+/* RETURN QR SCANNER */
+
+function toggleReturnScanner() {
+
+    const reader = document.getElementById("return-reader");
+    const button = document.getElementById("returnScanButton");
+
+
+    if (returnScanner) {
+
+        returnScanner.stop().then(() => {
+
+            returnScanner.clear();
+            returnScanner = null;
+            reader.classList.remove("active");
+            button.textContent = "📷 Scan QR to Return";
+
+        }).catch(() => {
+
+            returnScanner = null;
+            reader.classList.remove("active");
+            button.textContent = "📷 Scan QR to Return";
+
+        });
+
+        return;
+    }
+
+
+    reader.classList.add("active");
+
+    returnScanner = new Html5Qrcode("return-reader");
+
+    button.textContent = "✖ Stop Scanner";
+
+
+    returnScanner.start(
+
+        { facingMode: "environment" },
+
+        {
+            fps: 10,
+            qrbox: 250
+        },
+
+        (decodedText) => {
+
+            document.getElementById("return_isbn").value = decodedText;
+
+            document.getElementById("return_isbn_hidden").value = decodedText;
+
+
+            returnScanner.stop().then(() => {
+
+                returnScanner.clear();
+                returnScanner = null;
+                reader.classList.remove("active");
+                button.textContent = "📷 Scan QR to Return";
+
+                document.getElementById("return-form").submit();
+
+            });
+
+        },
+
+        () => {}
+
+    ).catch(() => {
+
+        alert(
+            "Unable to access camera. Please allow camera permission."
+        );
+
+        returnScanner = null;
+        reader.classList.remove("active");
+        button.textContent = "📷 Scan QR to Return";
+
+    });
+
+}
+
+
+/* TRANSACTION FILTER */
+
 function filterTransactions() {
 
-    const filter = document.getElementById("statusFilter").value;
+    const filter =
+        document.getElementById("statusFilter").value;
 
-    const rows = document.querySelectorAll(
-        "#transactionTable tbody tr[data-status]"
-    );
+    const rows =
+        document.querySelectorAll(
+            "#transactionTable tbody tr[data-status]"
+        );
+
 
     rows.forEach(row => {
 
-        const status = row.getAttribute("data-status");
+        const status =
+            row.getAttribute("data-status");
 
         if (filter === "All" || status === filter) {
+
             row.style.display = "";
+
         } else {
+
             row.style.display = "none";
+
         }
 
     });
+
+}
+
+
+/* INLINE MEMBER EDIT */
+
+function startEditMember(id) {
+
+    const row =
+        document.getElementById("member-row-" + id);
+
+    row.classList.add("editing");
+
+}
+
+
+function cancelEditMember(id) {
+
+    const row =
+        document.getElementById("member-row-" + id);
+
+    const inputs =
+        row.querySelectorAll(".member-edit-input");
+
+    const displays =
+        row.querySelectorAll(".member-display");
+
+
+    inputs.forEach((input, index) => {
+
+        input.value =
+            displays[index].textContent.trim();
+
+    });
+
+
+    row.classList.remove("editing");
 
 }
 
