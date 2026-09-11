@@ -8,7 +8,7 @@ The system supports **book issue/return management, QR-based scanning, member ma
 
 ## 🌐 Live Demo
 
-**Live URL: https://libra-track-8kfj3qmo6-sonali-b5af.vercel.app/**
+**Live URL: https://libra-track-effiwqnwk-sonali-b5af.vercel.app/**
 
 ---
 
