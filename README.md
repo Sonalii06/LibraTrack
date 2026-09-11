@@ -477,6 +477,7 @@ The following functionality can be tested after logging in as admin:
 ## 📸 Screenshots
 
 ### 🏠 Home Page
+<img width="947" height="476" alt="image" src="https://github.com/user-attachments/assets/3ba4a88e-0b56-4c28-a680-84ab8bbc32e3" />
 
 ### 🔐 Admin Login
 
