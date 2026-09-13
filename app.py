@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, session, Response
+from flask import Flask, render_template, request, redirect, session, Response, flash
 from datetime import date
 import sqlite3
 import csv
@@ -282,7 +282,6 @@ def add_book():
     conn = get_db()
 
     try:
-
         conn.execute("""
             INSERT INTO books
             (title, author, isbn, category)
@@ -297,7 +296,7 @@ def add_book():
         conn.commit()
 
     except sqlite3.IntegrityError:
-        pass
+        flash("A book with this ISBN already exists.", "error")
 
     conn.close()
 

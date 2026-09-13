@@ -581,3 +581,18 @@ td {
         display: inline-block;
     }
 </style>
+.flash-messages {
+    margin-bottom: 20px;
+}
+
+.flash-message {
+    padding: 14px 18px;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+.flash-message.error {
+    background: #fff0f3;
+    color: #d94f68;
+    border: 1px solid #f8b4c0;
+}
